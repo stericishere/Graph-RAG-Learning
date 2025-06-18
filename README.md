@@ -1,4 +1,4 @@
-# Graph Database MCP Implementation
+# Graph Database MCP
 
 [![Tests](https://img.shields.io/badge/tests-191%2F198%20passing-brightgreen)](./tests/)
 [![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://python.org)
