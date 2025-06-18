@@ -1,0 +1,27 @@
+# Core MCP Dependencies
+mcp>=1.0.0
+
+# Database Dependencies
+neo4j==5.25.0
+networkx==3.4.2
+
+# Environment and Configuration
+python-dotenv==1.0.0
+
+# MCP Server Framework
+fastapi==0.115.5
+uvicorn[standard]==0.32.1
+
+# Additional Utilities
+pydantic==2.9.2
+typing-extensions==4.12.2
+
+# Logging and Monitoring
+loguru==0.7.2
+
+# Development Dependencies (install with pip install -r requirements-dev.txt)
+# pytest==8.3.3
+# pytest-asyncio==0.24.0
+# black==24.10.0
+# flake8==7.1.1
+# mypy==1.13.0 

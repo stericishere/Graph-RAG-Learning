@@ -1,0 +1,15 @@
+{
+  "graph": {
+    "directed": false,
+    "multigraph": false,
+    "graph": {},
+    "nodes": [],
+    "links": []
+  },
+  "metadata": {
+    "nodes_by_label": {},
+    "relationship_counter": 0,
+    "node_count": 0,
+    "edge_count": 0
+  }
+}

@@ -1,0 +1,207 @@
+# Product Requirements Document: Final Minimal Lean Graph Database MCP
+
+## Project Overview
+Build a highly efficient, minimal graph database MCP (Model Context Protocol) server that serves as a centralized brain for AI agents. The system stores only essential information: Rules (AI behaviors/logic) and Learnt (validated solutions to problems).
+
+## Core Architecture
+
+### Database Support
+- **Dual Database Support**: Neo4j AND NetworkX based on .env configuration
+- **File-based Storage**: For portability and ease of deployment
+- **Environment Detection**: Automatically detect which database to use from .env variables
+
+### Node Definitions
+
+#### Rule Node
+- `ruleId`: Unique identifier (UUID)
+- `ruleName`: String indicating filename for cursor rule file creation
+- `content`: String containing the rule content
+- `category`: String (e.g., "frontend", "backend", "database")
+- `type`: String (e.g., "always", "auto_attached", "agent_requested", "manual")
+
+#### Learnt Node (Validated Solutions Only)
+- `learntId`: Unique identifier (UUID)
+- `timestamp_recorded`: ISO timestamp when recorded
+- `type_of_error`: String (e.g., "IncorrectAction", "Misunderstanding", "UnmetUserGoal")
+- `problem_summary`: Concise AI-generated problem summary
+- `problematic_input_segment`: User input part that caused the problem
+- `problematic_ai_output_segment`: Incorrect AI output that caused the issue
+- `inferred_original_cause`: AI's self-diagnosis of the problem
+- `original_severity`: String (e.g., "critical", "major", "minor")
+- `validated_solution_description`: Detailed description of the proven solution
+- `solution_implemented_notes`: Optional implementation details
+- `related_rule_ids`: List of Rule node IDs that were updated/created
+
+### Relationships
+- `(Learnt)-[:IMPROVES_RULE]->(Rule)`: Links validated solutions to improved rules
+
+## Technical Requirements
+
+### Framework & Language
+- **MCP Server**: Standard MCP Python server framework
+- **Database Libraries**: 
+  - Neo4j: `neo4j` Python driver
+  - NetworkX: `networkx` with file persistence (pickle/JSON)
+- **Environment Management**: `python-dotenv` for .env file handling
+
+### Environment Configuration
+```
+# Neo4j Configuration (if using Neo4j)
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=password
+
+# NetworkX Configuration (if using NetworkX)
+GRAPH_DB_TYPE=networkx
+NETWORKX_DATA_FILE=graph_data.json
+```
+
+### File Structure
+```
+ruling_database_mcp/
+├── src/
+│   ├── __init__.py
+│   ├── server.py                 # Main MCP server
+│   ├── database/
+│   │   ├── __init__.py
+│   │   ├── base.py              # Abstract database interface
+│   │   ├── neo4j_adapter.py     # Neo4j implementation
+│   │   └── networkx_adapter.py  # NetworkX implementation
+│   ├── models/
+│   │   ├── __init__.py
+│   │   ├── rule.py              # Rule node model
+│   │   └── learnt.py            # Learnt node model
+│   └── tools/
+│       ├── __init__.py
+│       ├── rule_tools.py        # Rule management tools
+│       └── learning_tools.py    # Learning management tools
+├── data/                        # File-based storage directory
+├── .env.example
+├── requirements.txt
+├── README.md
+└── pyproject.toml
+```
+
+## MCP Tools Specification
+
+### I. Rule Management Tools
+
+#### 1. rules/create_rule
+**Parameters:**
+- `rule_name`: String (required)
+- `content`: String (required) 
+- `category`: String (required) - e.g., "frontend", "backend", "database"
+- `rule_type`: String (required) - only "always", "auto_attached", "agent_requested", "manual"
+
+**Returns:** Rule ID (UUID)
+
+#### 2. rules/update_rule
+**Parameters:**
+- `rule_id`: String (required)
+- `updates`: Dict (required) - Contains fields to update
+
+**Returns:** Success status and updated rule details
+
+#### 3. rules/delete_rule
+**Parameters:**
+- `rule_id`: String (required)
+
+**Returns:** Success status
+
+#### 4. rules/get_all_rules
+**Parameters:**
+- `category`: String (optional) - Filter by category
+- `rule_type`: String (optional) - Filter by type
+
+**Returns:** List of all matching rules
+
+#### 5. rules/get_rule_details
+**Parameters:**
+- `rule_id`: String (required)
+
+**Returns:** Complete rule details
+
+### II. Learning Management Tools
+
+#### 6. learning/record_validated_solution
+**Parameters:**
+- `type_of_error`: String (required)
+- `problem_summary`: String (required)
+- `problematic_input_segment`: String (required)
+- `problematic_ai_output_segment`: String (required)
+- `inferred_original_cause`: String (required)
+- `original_severity`: String (required)
+- `validated_solution_description`: String (required)
+- `solution_implemented_notes`: String (optional)
+- `related_rule_ids`: List[String] (optional)
+
+**Returns:** Learnt ID (UUID)
+
+#### 7. learning/get_learnt_solutions
+**Parameters:**
+- `error_type`: String (optional) - Filter by error type
+- `severity`: String (optional) - Filter by severity
+- `related_rule_id`: String (optional) - Find solutions related to specific rule
+
+**Returns:** List of matching learnt solutions
+
+#### 8. learning/get_solution_details
+**Parameters:**
+- `learnt_id`: String (required)
+
+**Returns:** Complete learnt solution details
+
+## Initial Data Requirements
+
+### Initial Rules
+1. **Frontend Rule**
+   - `ruleName`: "react_best_practices"
+   - `content`: "Use functional components with hooks. Implement proper error boundaries. Follow React naming conventions."
+   - `category`: "frontend"
+   - `type`: "always"
+
+2. **Backend Rule**
+   - `ruleName`: "api_security"
+   - `content`: "Always validate input data. Implement proper authentication. Use HTTPS for all endpoints. Handle errors gracefully."
+   - `category`: "backend" 
+   - `type`: "always"
+
+## Performance Requirements
+- **Response Time**: < 100ms for simple queries
+- **Memory Usage**: Minimal memory footprint for file-based storage
+- **Concurrent Access**: Support multiple concurrent MCP connections
+- **Data Integrity**: Ensure data consistency across operations
+
+## Error Handling
+- Graceful degradation if database connection fails
+- Proper validation of all input parameters
+- Comprehensive error messages for debugging
+- Automatic fallback mechanisms between database types
+
+## Testing Requirements
+- Unit tests for all MCP tools
+- Integration tests for both Neo4j and NetworkX adapters
+- Performance benchmarks
+- Error scenario testing
+
+## Documentation Requirements
+- Complete API documentation for all MCP tools
+- Setup and configuration guide
+- Examples of rule and learning data structures
+- Troubleshooting guide
+
+## Success Criteria
+1. ✅ Dual database support (Neo4j + NetworkX) working seamlessly
+2. ✅ All 8 MCP tools implemented and functional
+3. ✅ Initial rules successfully loaded
+4. ✅ File-based storage working for both database types
+5. ✅ Environment-based configuration working
+6. ✅ Complete test coverage (>90%)
+7. ✅ Documentation complete and accurate
+8. ✅ Performance requirements met
+
+## Future Enhancements (Out of Scope)
+- Web-based administration interface
+- Rule validation logic
+- Automated rule generation from learnt solutions
+- Integration with external rule repositories 

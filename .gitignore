@@ -1,0 +1,108 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# Environment Variables
+.env
+.env.local
+.env.production
+.env.development
+
+# IDE and Editor Files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.spyderproject
+.spyproject
+.sublime-workspace
+.sublime-project
+
+# OS Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Database Files
+*.db
+*.sqlite
+*.sqlite3
+data/*.json
+data/*.pickle
+data/*.pkl
+
+# Neo4j specific
+neo4j/
+.neo4j/
+
+# NetworkX graph files
+graph_data.json
+graph_data.pkl
+graph_data.pickle
+
+# Logs
+logs/
+*.log
+debug.log
+error.log
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# pyenv
+.python-version
+
+# Documentation
+docs/_build/
+
+# MCP specific
+mcp-server.log
+*.mcp
+
+# Temporary files
+tmp/
+temp/
+.tmp/
